@@ -2,9 +2,7 @@ package com.core.subject1;
 
 import java.util.stream.IntStream;
 
-/**
- * Created by MDenisenko on 19.10.16.
- */
+
 public class MyListArray implements MyList {
 
     private final int DEFAULT_CAPACITY = 10;
@@ -12,43 +10,45 @@ public class MyListArray implements MyList {
     private int capacity;
     private int[] collection;
 
-    MyListArray(){
+    MyListArray() {
         collection = new int[DEFAULT_CAPACITY];
     }
 
     MyListArray(int capacity) {
-        if(capacity > 0){
+        if (capacity > 0) {
             collection = new int[capacity];
-        } else{
+        } else {
             collection = new int[DEFAULT_CAPACITY];
         }
     }
 
     public void addAll(int... numbers) {
-       int lengthArray = numbers.length;
-       checkCapacity(lengthArray);
-       System.arraycopy(numbers, 0, collection, 0, lengthArray);
-       capacity += lengthArray;
+        int lengthArray = numbers.length;
+        checkCapacity(lengthArray);
+        System.arraycopy(numbers, 0, collection, capacity, lengthArray);
+        capacity += lengthArray;
     }
 
 
-    public int get(int index)  {
+    public int get(int index) {
         checkIndex(index);
         return collection[index];
     }
 
-    public int size(){
+    public int size() {
         return capacity;
     }
 
     public void addToTop(int element) {
         checkCapacity(1);
-        int currentElement, newElement = 0;
+        /*int currentElement, newElement = 0;
         for(int i = 0; i <= size()+1; i++ ){
             currentElement = newElement;
             newElement = collection[i];
             collection[i] = currentElement + element;
-        }
+        }*/
+        collection = IntStream.concat(IntStream.of(element),
+                IntStream.of(collection).map(el -> el + element)).toArray();
         capacity++;
     }
 
@@ -73,44 +73,46 @@ public class MyListArray implements MyList {
             collection = newArray;
         }
         capacity++;
+
     }
 
     public void addToEnd(int element) {
         checkCapacity(1);
-        IntStream.range(0, capacity).forEach(i -> collection[i] +=element);
+        IntStream.range(0, capacity).forEach(i -> collection[i] += element);
         int indxElement = capacity++;
         collection[indxElement] = element;
     }
 
     public void removeIndex(int index) {
         int removeElement = collection[index];
-        IntStream.range(0, size()).forEach((i) -> collection[i] = collection[i] - removeElement);
+        IntStream.range(0, size()).forEach((i) -> collection[i] -= removeElement);
     }
 
     public void removeValue(int element) {
-        IntStream.range(0, size()).forEach((i) -> collection[i] = collection[i] - element);
+        IntStream.range(0, size()).forEach((i) -> collection[i] -= element);
     }
 
-    public int[] getArray(){
+    public int[] getArray() {
         int[] intArray = new int[capacity];
         System.arraycopy(collection, 0, intArray, 0, capacity);
         return intArray;
+//        return Arrays.copyOf(collection, capacity);
     }
 
-    private void checkIndex(int index){
+    private void checkIndex(int index) {
         int size = size();
-        if(index < 0 || index > size)  {
+        if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException(" index  = " + index);
         }
     }
 
-    private void checkCapacity(int countElements){
+    private void checkCapacity(int countElements) {
         int sizeArray = collection.length;
         int newSize = size() + countElements;
-        if( newSize >= sizeArray ){
+        if (newSize >= sizeArray) {
             int[] newArray;
-            if( countElements >= DEFAULT_CAPACITY ){
-               newArray = new int[(newSize >> 1) + newSize];
+            if (countElements >= DEFAULT_CAPACITY) {
+                newArray = new int[(newSize >> 1) + newSize];
             } else {
                 newArray = new int[sizeArray + DEFAULT_CAPACITY];
             }
