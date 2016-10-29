@@ -3,6 +3,8 @@ package com.core.subject1;
 import org.junit.*;
 import org.junit.Test;
 
+import java.util.stream.IntStream;
+
 import static org.junit.Assert.*;
 
 /**
@@ -25,6 +27,23 @@ public class MyListArrayTest {
         assertArrayEquals(expectList, actuals);
     }
 
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void edgesOfListSizeTest() {
+        MyListArray tempList = new MyListArray(2);
+        tempList.addAll(1, 2);
+
+        System.out.println(tempList.get(2));
+
+    }
+
+    @Test
+    public void addToTopLogicTest() {
+        int element = 3;
+        int[] collection = new int[]{1, 2};
+        int[] result = IntStream.concat(IntStream.of(element),
+                IntStream.of(collection).map(el -> el + element)).toArray();
+        assertArrayEquals(new int[]{3, 4, 5}, result);
+    }
 
     @Test
     public void getTest() throws Exception {
@@ -79,5 +98,7 @@ public class MyListArrayTest {
         int[] actualsList = list.getArray();
         assertArrayEquals(expectList, actualsList);
     }
+
+
 
 }
